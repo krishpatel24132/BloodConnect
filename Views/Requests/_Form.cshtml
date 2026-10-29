@@ -1,0 +1,61 @@
+@model BloodRequest
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="PatientName" class="form-label"></label>
+        <input asp-for="PatientName" class="form-control" />
+        <span asp-validation-for="PatientName" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 col-6">
+        <label asp-for="BloodGroup" class="form-label"></label>
+        <select asp-for="BloodGroup" class="form-select" asp-items="@(new SelectList(Lookups.BloodGroups))">
+            <option value="">-- Select --</option>
+        </select>
+        <span asp-validation-for="BloodGroup" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 col-6">
+        <label asp-for="Units" class="form-label"></label>
+        <input asp-for="Units" class="form-control" type="number" min="1" max="10" />
+        <span asp-validation-for="Units" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Hospital" class="form-label"></label>
+        <input asp-for="Hospital" class="form-control" />
+        <span asp-validation-for="Hospital" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="City" class="form-label"></label>
+        <input asp-for="City" class="form-control" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="ContactPhone" class="form-label"></label>
+        <input asp-for="ContactPhone" class="form-control" inputmode="numeric" maxlength="10" />
+        <span asp-validation-for="ContactPhone" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="RequiredBy" class="form-label"></label>
+        <input asp-for="RequiredBy" class="form-control" type="date" />
+        <span asp-validation-for="RequiredBy" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Urgency" class="form-label"></label>
+        <select asp-for="Urgency" class="form-select" asp-items="@(new SelectList(Lookups.UrgencyLevels))"></select>
+        <span asp-validation-for="Urgency" class="text-danger"></span>
+    </div>
+    @if (Model.Id > 0)
+    {
+        <div class="col-md-4">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-select" asp-items="@(new SelectList(Lookups.RequestStatuses))"></select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+    }
+    <div class="col-12">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+@model BloodRequest
+@{
+    ViewData["Title"] = "Delete Request";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 text-danger"><i class="bi bi-exclamation-triangle"></i> Delete this request?</h1>
+                <p class="text-body-secondary">Donation records linked to this request are kept but will no longer be linked to it.</p>
+                <dl class="row">
+                    <dt class="col-4">Patient</dt><dd class="col-8">@Model.PatientName</dd>
+                    <dt class="col-4">Blood group</dt><dd class="col-8">@Model.BloodGroup</dd>
+                    <dt class="col-4">Hospital</dt><dd class="col-8">@Model.Hospital, @Model.City</dd>
+                    <dt class="col-4">Status</dt><dd class="col-8">@Model.Status</dd>
+                </dl>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">Yes, delete</button>
+                    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

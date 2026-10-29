@@ -1,0 +1,147 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var maxCount = Math.Max(1, Model.GroupCounts.Max(g => g.Count));
+    var hasOpenRequests = Model.UrgencyCounts.Sum(x => x.Count) > 0;
+}
+
+<div class="hero p-4 p-md-5 mb-4">
+    <h1 class="display-6 fw-bold mb-2"><i class="bi bi-droplet-half"></i> Every drop counts.</h1>
+    <p class="lead mb-3">Register donors, raise blood requests and match them with eligible donors in seconds.</p>
+    <a class="btn btn-light me-2 mb-2" asp-controller="Requests" asp-action="Create"><i class="bi bi-plus-circle"></i> Request Blood</a>
+    <a class="btn btn-outline-light mb-2" asp-controller="Donors" asp-action="Index"><i class="bi bi-people"></i> Browse Donors</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h6 mb-3"><i class="bi bi-search-heart text-danger"></i> Emergency donor search</h2>
+        <form method="get" asp-controller="Donors" asp-action="Index" class="row g-2 align-items-end">
+            <div class="col-12 col-md-3">
+                <label class="form-label small mb-1" for="qBlood">Blood group</label>
+                <select id="qBlood" name="bloodGroup" class="form-select" asp-items="@(new SelectList(Lookups.BloodGroups))">
+                    <option value="">Any group</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-5">
+                <label class="form-label small mb-1" for="qCity">City or name</label>
+                <input id="qCity" name="search" class="form-control" placeholder="e.g. Ahmedabad" />
+            </div>
+            <div class="col-12 col-md-4">
+                <button type="submit" class="btn btn-bc w-100"><i class="bi bi-search"></i> Find donors</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card shadow-sm h-100"><div class="card-body">
+            <div class="text-body-secondary small">Registered Donors</div>
+            <div class="stat-value">@Model.TotalDonors</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card shadow-sm h-100"><div class="card-body">
+            <div class="text-body-secondary small">Eligible to Donate Now</div>
+            <div class="stat-value">@Model.EligibleDonors</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card shadow-sm h-100"><div class="card-body">
+            <div class="text-body-secondary small">Open Requests <span class="text-danger">(@Model.CriticalRequests critical)</span></div>
+            <div class="stat-value">@Model.OpenRequests</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card shadow-sm h-100"><div class="card-body">
+            <div class="text-body-secondary small">Units Donated</div>
+            <div class="stat-value">@Model.UnitsDonated</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Donors by Blood Group</div>
+            <div class="card-body">
+                @foreach (var g in Model.GroupCounts)
+                {
+                    var pct = (int)Math.Round(g.Count * 100.0 / maxCount);
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="blood-chip me-2">@g.BloodGroup</span>
+                        <div class="group-bar flex-grow-1"><span style="width:@(pct)%"></span></div>
+                        <span class="ms-2 fw-semibold" style="min-width:1.5rem">@g.Count</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Open Requests by Urgency</div>
+            <div class="card-body d-flex align-items-center justify-content-center">
+                @if (hasOpenRequests)
+                {
+                    <div style="max-width:280px;width:100%"><canvas id="urgencyChart"></canvas></div>
+                }
+                else
+                {
+                    <span class="text-body-secondary">No open requests right now.</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">Upcoming Open Requests</div>
+    <ul class="list-group list-group-flush">
+        @if (!Model.UrgentRequests.Any())
+        {
+            <li class="list-group-item text-body-secondary">No open requests right now.</li>
+        }
+        @foreach (var r in Model.UrgentRequests)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="blood-chip me-2">@r.BloodGroup</span>
+                    <a asp-controller="Requests" asp-action="Details" asp-route-id="@r.Id">@r.PatientName</a>
+                    <div class="small text-body-secondary">@r.Hospital, @r.City &middot; needed by @(r.RequiredBy?.ToString("dd MMM"))</div>
+                </div>
+                <span class="badge text-bg-@Lookups.UrgencyBadge(r.Urgency)">@r.Urgency</span>
+            </li>
+        }
+    </ul>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.LastViewedDonor))
+{
+    <p class="text-body-secondary small mt-3 mb-0">
+        <i class="bi bi-clock-history"></i> You last viewed donor <strong>@Model.LastViewedDonor</strong> (remembered in your session).
+    </p>
+}
+
+@section Scripts {
+    @if (hasOpenRequests)
+    {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+        <script>
+            (function () {
+                var el = document.getElementById('urgencyChart');
+                if (!el || !window.Chart) { return; }
+                new Chart(el, {
+                    type: 'doughnut',
+                    data: {
+                        labels: @Json.Serialize(Model.UrgencyCounts.Select(x => x.Label)),
+                        datasets: [{
+                            data: @Json.Serialize(Model.UrgencyCounts.Select(x => x.Count)),
+                            backgroundColor: ['#6c757d', '#ffc107', '#dc3545']
+                        }]
+                    },
+                    options: { plugins: { legend: { position: 'bottom' } } }
+                });
+            })();
+        </script>
+    }
+}

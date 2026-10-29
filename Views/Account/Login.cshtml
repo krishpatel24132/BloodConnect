@@ -1,0 +1,32 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Admin Login";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h4 mb-3"><i class="bi bi-shield-lock"></i> Admin Login</h2>
+                <p class="text-body-secondary small">Sign in to register donors, edit records and log donations.</p>
+
+                <form asp-action="Login" method="post">
+                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" autocomplete="username" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-bc w-100">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

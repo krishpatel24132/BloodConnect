@@ -1,0 +1,51 @@
+@model Donation
+@{
+    ViewData["Title"] = "Record Donation";
+}
+
+<h1 class="h3 mb-3"><i class="bi bi-heart-pulse text-danger"></i> Record Donation</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Create" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="DonorId" class="form-label"></label>
+                    <select asp-for="DonorId" class="form-select" asp-items="@((SelectList)ViewBag.Donors)">
+                        <option value="">-- Select donor --</option>
+                    </select>
+                    <span asp-validation-for="DonorId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="BloodRequestId" class="form-label"></label>
+                    <select asp-for="BloodRequestId" class="form-select" asp-items="@((SelectList)ViewBag.Requests)">
+                        <option value="">General donation (no request)</option>
+                    </select>
+                    <span asp-validation-for="BloodRequestId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="DonatedOn" class="form-label"></label>
+                    <input asp-for="DonatedOn" class="form-control" type="date" />
+                    <span asp-validation-for="DonatedOn" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Units" class="form-label"></label>
+                    <input asp-for="Units" class="form-control" type="number" min="1" max="2" />
+                    <span asp-validation-for="Units" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Notes" class="form-label"></label>
+                    <input asp-for="Notes" class="form-control" />
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-bc">Save Donation</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

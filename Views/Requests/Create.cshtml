@@ -1,0 +1,18 @@
+@model BloodRequest
+@{
+    ViewData["Title"] = "New Blood Request";
+}
+
+<h1 class="h3 mb-3"><i class="bi bi-plus-circle text-danger"></i> New Blood Request</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Create" method="post" novalidate>
+            <partial name="_Form" model="Model" />
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-bc">Submit Request</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

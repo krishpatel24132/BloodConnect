@@ -1,0 +1,49 @@
+@model Donor
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" type="email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Phone" class="form-label"></label>
+        <input asp-for="Phone" class="form-control" inputmode="numeric" maxlength="10" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="BloodGroup" class="form-label"></label>
+        <select asp-for="BloodGroup" class="form-select" asp-items="@(new SelectList(Lookups.BloodGroups))">
+            <option value="">-- Select --</option>
+        </select>
+        <span asp-validation-for="BloodGroup" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="DateOfBirth" class="form-label"></label>
+        <input asp-for="DateOfBirth" class="form-control" type="date" />
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="City" class="form-label"></label>
+        <input asp-for="City" class="form-control" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="LastDonationDate" class="form-label"></label>
+        <input asp-for="LastDonationDate" class="form-control" type="date" />
+        <span asp-validation-for="LastDonationDate" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 d-flex align-items-end">
+        <div class="form-check form-switch mb-2">
+            <input asp-for="IsAvailable" class="form-check-input" />
+            <label asp-for="IsAvailable" class="form-check-label"></label>
+        </div>
+    </div>
+</div>
